@@ -1,11 +1,5 @@
 import { LLMModel } from "../client/api";
 
-const customProvider = (modelName: string) => ({
-  id: modelName,
-  providerName: "",
-  providerType: "custom",
-});
-
 export function collectModelTable(
   models: readonly LLMModel[],
   customModels: string,
@@ -17,7 +11,6 @@ export function collectModelTable(
       name: string;
       displayName: string;
       provider?: LLMModel["provider"]; // Marked as optional
-      isDefault?: boolean;
     }
   > = {};
 
@@ -27,6 +20,12 @@ export function collectModelTable(
       ...m,
       displayName: m.name, // 'provider' is copied over if it exists
     };
+  });
+
+  const customProvider = (modelName: string) => ({
+    id: modelName,
+    providerName: "",
+    providerType: "custom",
   });
 
   // server custom models
@@ -53,27 +52,6 @@ export function collectModelTable(
         };
       }
     });
-
-  return modelTable;
-}
-
-export function collectModelTableWithDefaultModel(
-  models: readonly LLMModel[],
-  customModels: string,
-  defaultModel: string,
-) {
-  let modelTable = collectModelTable(models, customModels);
-  if (defaultModel && defaultModel !== "") {
-    delete modelTable[defaultModel];
-    modelTable[defaultModel] = {
-      name: defaultModel,
-      displayName: defaultModel,
-      available: true,
-      provider:
-        modelTable[defaultModel]?.provider ?? customProvider(defaultModel),
-      isDefault: true,
-    };
-  }
   return modelTable;
 }
 
@@ -87,19 +65,5 @@ export function collectModels(
   const modelTable = collectModelTable(models, customModels);
   const allModels = Object.values(modelTable);
 
-  return allModels;
-}
-
-export function collectModelsWithDefaultModel(
-  models: readonly LLMModel[],
-  customModels: string,
-  defaultModel: string,
-) {
-  const modelTable = collectModelTableWithDefaultModel(
-    models,
-    customModels,
-    defaultModel,
-  );
-  const allModels = Object.values(modelTable);
   return allModels;
 }

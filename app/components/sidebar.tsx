@@ -4,6 +4,7 @@ import styles from "./home.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
+import RechargeIcon from "../icons/recharge.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
@@ -155,13 +156,13 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          NextChat
+          EasyChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          {/*你身边的ai管家*/}
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
+          {/*<ChatGptIcon />*/}
         </div>
       </div>
 
@@ -179,13 +180,13 @@ export function SideBar(props: { className?: string }) {
           }}
           shadow
         />
-        <IconButton
+        {/*<IconButton
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
           className={styles["sidebar-bar-button"]}
           onClick={() => showToast(Locale.WIP)}
           shadow
-        />
+        />*/}
       </div>
 
       <div
@@ -216,10 +217,15 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
+          {/*<div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
+          </div>*/}
+          <div className={styles["sidebar-action"]}>
+            <Link to={Path.Recharge}>
+              <IconButton icon={<RechargeIcon />} shadow />
+            </Link>
           </div>
         </div>
         <div>

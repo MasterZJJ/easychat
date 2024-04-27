@@ -21,10 +21,11 @@ export class GeminiProApi implements LLMApi {
   }
   async chat(options: ChatOptions): Promise<void> {
     // const apiClient = this;
+    const visionModel = isVisionModel(options.config.model);
     let multimodal = false;
     const messages = options.messages.map((v) => {
       let parts: any[] = [{ text: getMessageTextContent(v) }];
-      if (isVisionModel(options.config.model)) {
+      if (visionModel) {
         const images = getMessageImages(v);
         if (images.length > 0) {
           multimodal = true;
@@ -116,12 +117,17 @@ export class GeminiProApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
     try {
+      let googleChatPath = visionModel
+        ? Google.VisionChatPath(modelConfig.model)
+        : Google.ChatPath(modelConfig.model);
+      let chatPath = this.path(googleChatPath);
+
       // let baseUrl = accessStore.googleUrl;
 
       if (!baseUrl) {
         baseUrl = isApp
-          ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath(modelConfig.model)
-          : this.path(Google.ChatPath(modelConfig.model));
+          ? DEFAULT_API_HOST + "/api/proxy/google/" + googleChatPath
+          : chatPath;
       }
 
       if (isApp) {
@@ -139,7 +145,6 @@ export class GeminiProApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
-      
       if (shouldStream) {
         let responseText = "";
         let remainText = "";

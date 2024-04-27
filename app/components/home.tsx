@@ -44,6 +44,10 @@ const Settings = dynamic(async () => (await import("./settings")).Settings, {
   loading: () => <Loading noLogo />,
 });
 
+const Recharge = dynamic(async () => (await import("./recharge")).Recharge, {
+  loading: () => <Loading noLogo />,
+});
+
 const Chat = dynamic(async () => (await import("./chat")).Chat, {
   loading: () => <Loading noLogo />,
 });
@@ -160,6 +164,7 @@ function Screen() {
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
               <Route path={Path.Settings} element={<Settings />} />
+              <Route path={Path.Recharge} element={<Recharge />} />
             </Routes>
           </div>
         </>

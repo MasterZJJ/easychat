@@ -408,8 +408,14 @@ const cn = {
   FineTuned: {
     Sysmessage: "你是一个助手",
   },
+  Recharge:{
+    Title: "充值",
+    SubTitle: "查看充值token余量",
+    TokenTitle: "请输入用于充值的密钥：ak-xxxxxx",
+    ButtonTitle: "充值余额",
+  },
   Mask: {
-    Name: "面具",
+    Name: "面具预设",
     Page: {
       Title: "预设角色面具",
       SubTitle: (count: number) => `${count} 个预设角色定义`,
