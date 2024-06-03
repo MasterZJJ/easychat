@@ -441,29 +441,6 @@ export function Recharge() {
     maskStore.get(editingMaskId) ?? BUILTIN_MASK_STORE.get(editingMaskId);
   const closeMaskModal = () => setEditingMaskId(undefined);
 
-  const downloadAll = () => {
-    downloadAs(JSON.stringify(masks.filter((v) => !v.builtin)), FileName.Masks);
-  };
-
-  const importFromFile = () => {
-    readFromFile().then((content) => {
-      try {
-        const importMasks = JSON.parse(content);
-        if (Array.isArray(importMasks)) {
-          for (const mask of importMasks) {
-            if (mask.name) {
-              maskStore.create(mask);
-            }
-          }
-          return;
-        }
-        //if the content is a single mask.
-        if (importMasks.name) {
-          maskStore.create(importMasks);
-        }
-      } catch {}
-    });
-  };
 
   return (
     <ErrorBoundary>
@@ -488,158 +465,19 @@ export function Recharge() {
             </div>
           </div>
         </div>
-
-        <div className={styles["mask-page-body"]}>
-          <div className={styles["mask-filter"]}>
-            <input
-              type="text"
-              className={styles["search-bar"]}
-              placeholder={Locale.Recharge.TokenTitle}
-              autoFocus
-              onInput={(e) => onSearch(e.currentTarget.value)}
-            />
-
-            <IconButton
-              className={styles["mask-create"]}
-              text={Locale.Recharge.ButtonTitle}
-              bordered
-              onClick={() => {
-                const createdMask = maskStore.create();
-                setEditingMaskId(createdMask.id);
-              }}
-            />
-          </div>
-
-          <div className={styles["mask-padding-bottom"]}>
-            <div className={styles["mask-item"]}>
-              <div className={styles["mask-header"]}>
-                <div className={styles["mask-title"]}>
-                  <div className={styles["mask-info2"] + " one-line"}>
-                    <span className={styles["mask-span"]}>密钥:</span>
-                    ak-ozoODlfBgzxRMQgzKJ0KZBS8HA5xonOMq77aDiubW7Zo5BMq
-                  </div>
-                  <div className={styles["mask-info2"] + " one-line"}>
-                    <span className={styles["mask-span"]}>状态:</span>
-
-                  </div>
-                  <div className={styles["mask-info2"] + " one-line"}>
-                    <span className={styles["mask-span"]}>总计:</span>
-                    92,593 tokens （全局用量，不可用于充值）
-                  </div>
-                  <div className={styles["mask-info2"] + " one-line"}>
-                    <span className={styles["mask-span"]}>已用:</span>
-                    57,235 tokens
-                  </div>
-                  <div className={styles["mask-info2"] + " one-line"}>
-                    <span className={styles["mask-span"]}>剩余:</span>
-                    38.19%
-                  </div>
-                  <div className={styles["mask-info2"] + " one-line"}>
-                    <span className={styles["mask-span"]}>模型:</span>
-                    <span className={styles["mask-span2"]}>gpt-4, gpt-4-0314, gpt-4-0613, gpt-4-32k, gpt-4-32k-0314, gpt-4-32k-0613, gpt-4-turbo, gpt-4-turbo-preview, gpt-4-turbo-2024-04-09, gpt-4-1106-preview, gpt-4-0125-preview, gpt-3.5-turbo, gpt-3.5-turbo-0301, gpt-3.5-turbo-0613, gpt-3.5-turbo-16k, gpt-3.5-turbo-16k-0613, gpt-3.5-turbo-1106, gpt-3.5-turbo-0125, text-embedding-ada-002, text-embedding-3-large, text-embedding-3-small</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            {masks.map((m) => (
-              <div className={styles["mask-item"]} key={m.id}>
-                <div className={styles["mask-header"]}>
-                  <div className={styles["mask-icon"]}>
-                    <MaskAvatar avatar={m.avatar} model={m.modelConfig.model} />
-                  </div>
-                  <div className={styles["mask-title"]}>
-                    <div className={styles["mask-name"]}>{m.name}</div>
-                    <div className={styles["mask-info"] + " one-line"}>
-                      {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                        ALL_LANG_OPTIONS[m.lang]
-                      } / ${m.modelConfig.model}`}
-                    </div>
-                  </div>
-                </div>
-                <div className={styles["mask-actions"]}>
-                  <IconButton
-                    icon={<AddIcon />}
-                    text={Locale.Mask.Item.Chat}
-                    onClick={() => {
-                      chatStore.newSession(m);
-                      navigate(Path.Chat);
-                    }}
-                  />
-                  {m.builtin ? (
-                    <IconButton
-                      icon={<EyeIcon />}
-                      text={Locale.Mask.Item.View}
-                      onClick={() => setEditingMaskId(m.id)}
-                    />
-                  ) : (
-                    <IconButton
-                      icon={<EditIcon />}
-                      text={Locale.Mask.Item.Edit}
-                      onClick={() => setEditingMaskId(m.id)}
-                    />
-                  )}
-                  {!m.builtin && (
-                    <IconButton
-                      icon={<DeleteIcon />}
-                      text={Locale.Mask.Item.Delete}
-                      onClick={async () => {
-                        if (await showConfirm(Locale.Mask.Item.DeleteConfirm)) {
-                          maskStore.delete(m.id);
-                        }
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/*<iframe
+            height={900}
+            frameborder={"no"}
+            border={0}
+            marginwidth={0}
+            marginheight="0"
+            scrolling="yes"
+            allowtransparency="yes"
+            id="inlineFrameExample"
+            title="Inline Frame Example"
+            src="https://api.nextapi.fun/usage">
+        </iframe>*/}
       </div>
-
-      {editingMask && (
-        <div className="modal-mask">
-          <Modal
-            title={Locale.Mask.EditModal.Title(editingMask?.builtin)}
-            onClose={closeMaskModal}
-            actions={[
-              <IconButton
-                icon={<DownloadIcon />}
-                text={Locale.Mask.EditModal.Download}
-                key="export"
-                bordered
-                onClick={() =>
-                  downloadAs(
-                    JSON.stringify(editingMask),
-                    `${editingMask.name}.json`,
-                  )
-                }
-              />,
-              <IconButton
-                key="copy"
-                icon={<CopyIcon />}
-                bordered
-                text={Locale.Mask.EditModal.Clone}
-                onClick={() => {
-                  navigate(Path.Masks);
-                  maskStore.create(editingMask);
-                  setEditingMaskId(undefined);
-                }}
-              />,
-            ]}
-          >
-            <MaskConfig
-              mask={editingMask}
-              updateMask={(updater) =>
-                maskStore.updateMask(editingMaskId!, updater)
-              }
-              readonly={editingMask.builtin}
-            />
-          </Modal>
-        </div>
-      )}
     </ErrorBoundary>
   );
 }
